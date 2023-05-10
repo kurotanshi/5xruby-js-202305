@@ -21,7 +21,22 @@
 請編寫一個 JavaScript 函數 `isEven` ，接受一個數字作為參數，並判斷該數字是否為偶數。 如果是偶數，則回傳 true，否則回傳 false。
 */
 
-function isEven(num) {}
+    function checkEven(num) {
+
+        num = $('#number3').val();
+
+        if (num % 2 === 0) {
+
+            $('#evenResult').text(num + '為偶數');
+
+        } else {
+
+            $('#evenResult').text(num + '不為偶數');
+
+        };
+
+
+    }
 
 </script>
 </body>
