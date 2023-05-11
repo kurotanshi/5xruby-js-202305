@@ -22,7 +22,17 @@
 請編寫一個 JavaScript 函數 `isAverageAbove60` ，接受三個數字作為參數，計算它們的平均值。 如果平均值大於等於 60，則回傳 true，否則回傳 false。
 */
 
-function isAverageAbove60(num1, num2, num3) {}
+function checkAverage(){
+    let a =parseInt( $("#number4").val());
+    let b = parseInt($("#number5").val());
+    let c = parseInt($("#number6").val());
+    let average = (a + b + c) / 3;
+    if(average >= 60){
+        $("#averageResult").html("true");
+    }else{
+        $("#averageResult").html("false");
+    }
+}
 
 </script>
 </body>
