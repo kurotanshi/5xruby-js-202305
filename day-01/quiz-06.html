@@ -24,8 +24,16 @@
 如果年份能被 100 整除，且能被 400 整除，則該年為閏年。
 */
 
-function isLeapYear(year) {}
-
+function checkLeapYear(){
+    let a = $("#year").val();
+    if(a % 4 === 0 && a % 100 !==0){
+        $("#leapYearResult").html("是閏年");
+    }else if(a % 100 === 0 && a % 400 ===0){
+        $("#leapYearResult").html("是閏年");
+    }else {
+        $("#leapYearResult").html("不是閏年");
+    }
+}
 </script>
 </body>
 </html>
