@@ -15,17 +15,20 @@
   <p id="gradeComment"></p>
 
 <script>
-/*
-題目四：根據成績等級返回評語
-請編寫一個 JavaScript 函數 `getGradeComment` ，接受一個成績作為參數，並根據以下條件返回相應的評語：
-  - 成績 >= 90：返回 "優秀"
-  - 成績 >= 80：返回 "良好"
-  - 成績 >= 70：返回 "一般"
-  - 成績 >= 60：返回 "及格"
-  - 成績 < 60： 返回 "不及格"
-*/
-
-function getGradeComment(grade) {}
+function showGradeComment(){
+    let a = $("#grade").val();
+    if(a >= 90){
+        $("#gradeComment").html("優秀");
+    }else if (a >= 80){
+        $("#gradeComment").html("良好");
+    }else if(a >= 70){
+        $("#gradeComment").html("一般");
+    }else if(a >= 60){
+        $("#gradeComment").html("及格");
+    }else{
+        $("#gradeComment").html("不及格");
+    }
+}
 
 </script>
 </body>
