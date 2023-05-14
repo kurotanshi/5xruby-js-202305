@@ -40,10 +40,9 @@
       return (year % 4 === 0 && year % 100 !== 0) || (year % 100 === 0 && year % 400 === 0);
     }
 
-    // 投機取巧寫法
-    function isLeapYearStrange(year) {
-      return new Date(year, 1, 29).getDate() === 29;
-    }
+  function isLeapYear(year) {
+    return new Date(year, 2, 0).getDate() === 29;
+  }
 
     $('button').click(() => {
       let year = $('#year').val();

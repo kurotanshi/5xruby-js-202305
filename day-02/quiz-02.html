@@ -38,5 +38,27 @@
   當顯示第一張圖片時，按下「上一張」按鈕，則顯示最後一張圖片；當顯示最後一張圖片時，按下「下一張」按鈕，則顯示第一張圖片。
 
 -->
+
+<script>
+  $(function() {
+    const $imgs = $('img');
+    const $prev = $('button:first');
+    const $next = $('button:last');
+    let index = 0;
+
+    $prev.click(function() {
+      $imgs.eq(index).removeClass('show');
+      index = index === 0 ? $imgs.length - 1 : index - 1;
+      $imgs.eq(index).addClass('show');
+    });
+
+    $next.click(function() {
+      $imgs.eq(index).removeClass('show');
+      index = index === $imgs.length - 1 ? 0 : index + 1;
+      $imgs.eq(index).addClass('show');
+    });
+  });
+</script>
+
 </body>
 </html>
