@@ -126,6 +126,9 @@
     // 完成按鈕功能
     $('.btn').on('click', function () {
 
+        var className = $('.select').val();
+        $('.card').removeClass('col-sm-1 col-sm-2 col-sm-3 col-sm-4').addClass(className);
+
     });
   </script>
 
