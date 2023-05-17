@@ -39,7 +39,7 @@
 <body>
   <h1>猜數字遊戲</h1>
   <p>請猜一個 1 到 100 之間的數字：</p>
-  <button class="start" onclick="init()">開始遊戲</button>
+  <button class="start">開始遊戲</button>
   <section class="game-section hidden">
     <input type="text" id="userGuess">
     <button id="submitGuess">送出</button>
@@ -54,44 +54,42 @@
   程式根據使用者的輸入給出提示：較大、較小或正確。
   使用者可無限次數嘗試猜測，直到猜對為止，並提示對方猜了幾次。
 -->
-
-
   <script>
+    (function () {
+      const $start = $('.start')
+      const $feedback = $('#feedback');
+      const $userGuess = $('#userGuess');
+      const $submitGuess = $('#submitGuess');
+      let count = 0;
+      let answer = 0;
 
-    const $feedback = $('#feedback');
-    const $userGuess = $('#userGuess');
-    const $submitGuess = $('#submitGuess');
-    let count = 0;
-    let answer = 0;
+      $start.click(()=>{
+        answer = Math.floor(Math.random() * 100) + 1;
+        count = 0;
+        $feedback.text('');
+        $('.game-section').removeClass('hidden');
+        $('.start').addClass('hidden');
+      })
 
-    let init = () => {
-      answer = Math.floor(Math.random() * 100) + 1;
-      count = 0;
-      console.log(answer)
-      $feedback.text('');
-      $('.game-section').removeClass('hidden');
-      $('.start').addClass('hidden');
-    }
-
-    $submitGuess.click(() => {
-      count++;
-      let guess = +$userGuess.val();
-      if (guess < 1 || guess > 100) {
-        $feedback.text('請輸入 1 到 100 之間的數字');
-      } else if (guess > answer) {
-        $feedback.text('太大了');
-      } else if (guess < answer) {
-        $feedback.text('太小了');
-      } else if(guess === answer) {
-        $('.game-section').addClass('hidden');
-        $('.start').removeClass('hidden');
-        $feedback.text(`猜對了，共猜了 ${count} 次`);
-      }else{
-        $feedback.text('請輸入數字');
-      }
-      $userGuess.val("")
-    })
-    
+      $submitGuess.click(() => {
+        count++;
+        let guess = +$userGuess.val();
+        if (guess < 1 || guess > 100) {
+          $feedback.text('請輸入 1 到 100 之間的數字');
+        } else if (guess > answer) {
+          $feedback.text('太大了');
+        } else if (guess < answer) {
+          $feedback.text('太小了');
+        } else if (guess === answer) {
+          $('.game-section').addClass('hidden');
+          $('.start').removeClass('hidden');
+          $feedback.text(`猜對了，共猜了 ${count} 次`);
+        } else {
+          $feedback.text('請輸入數字');
+        }
+        $userGuess.val("")
+      })
+    })()
   </script>
 </body>
 </html>
