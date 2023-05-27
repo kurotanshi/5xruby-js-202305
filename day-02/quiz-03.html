@@ -122,12 +122,27 @@
     選擇 col-sm-2，則所有的 card 的 class 都改成 col-sm-2...，以此類推。
   -->
 
-  <script>
-    // 完成按鈕功能
-    $('.btn').on('click', function () {
+<script>
+  
+//用一改變就監聽
+const select = document.querySelector(".select");
+//宣告button
+const clickMe = document.querySelector(".btn");
+//選取所有卡片
+const cards = document.querySelectorAll(".card");
+//用All後面迴圈才能全部的card都遍歷 不然只用querySelector會跑不出來
 
-    });
-  </script>
+clickMe.addEventListener("click", function (e) {
+  for (let i = 0; i < cards.length; i++) {
+    cards[i].classList.remove("col-sm-1", "col-sm-2", "col-sm-3", "col-sm-4");
+  } //刪除原本的col-sm- 的class, 才不會因為class一直疊加的狀況
+
+  for (let i = 0; i < cards.length; i++) {
+    cards[i].classList.add(select.value);
+  }
+});
+
+</script>
 
 </body>
 </html>
