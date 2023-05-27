@@ -7,11 +7,12 @@
     <script src="https://code.jquery.com/jquery-3.6.4.slim.js" integrity="sha256-dWvV84T6BhzO4vG6gWhsWVKVoa4lVmLnpBOZh/CAHU4=" crossorigin="anonymous"></script>
 </head>
 <body>
-    <h1>猜數字遊戲</h1>
-    <p>請猜一個 1 到 100 之間的數字：</p>
-    <input type="text" id="userGuess">
-    <button id="submitGuess">送出</button>
-    <p id="feedback"></p>
+<h1>猜數字遊戲</h1>
+<p>請猜一個 1 到 100 之間的數字：</p>
+<input type="text" id="userGuess">
+<button id="submitGuess">送出</button>
+<p id="feedback"></p>
+<p id="guessTime"></p>
 
 <!-- 
   1. 建立一個猜數字遊戲
@@ -20,5 +21,109 @@
   程式根據使用者的輸入給出提示：較大、較小或正確。
   使用者可無限次數嘗試猜測，直到猜對為止，並提示對方猜了幾次。
 -->
+    
+<script>
+    
+    function randomNumber() {
+  a = Math.floor(Math.random() * 100) + 1;
+}
+//無條件捨去再加1才會變成1-100 但放在裡面每點一次就重新跑一次 所以移到外面
+
+let a = null; //chatgpt提供補充 但不知道為什麼?
+if (a === null) {
+  randomNumber();
+}
+
+let guessTime = 0; //放到外面才能累加
+//input的數字放這裡
+let guessNumber = [];
+
+//提示陣列
+let difference = []; //將guessNumber內每個數字由大到小排列 並塞入c陣列中
+
+//將猜測數字和答案差距 回傳difference陣列
+function intervalNumber() {
+  difference = guessNumber.map(function (item) {
+    return item - a; //猜的數字每個都減掉答案
+  });
+}
+
+//將陣列c內數字分成正數和負數兩種陣列 並按照順序排列
+let positiveNumbers = [];
+let negativeNumbers = [];
+function filterNumber() {
+  positiveNumbers = difference.filter(function (item) {
+    return item > 0;
+  });
+  negativeNumbers = difference.filter(function (item) {
+    return item < 0;
+  });
+  positiveNumbers.sort(function (a, b) {
+    return a - b; //positiveNumbers陣列數字 由小到大排列
+  });
+  negativeNumbers.sort(function (a, b) {
+    return b - a; //negativeNumbers陣列數字 由大到小排列
+  });
+
+  //分別取出正數(最小值:第一筆)和負數(最大值:第一筆)陣列中的值
+  if (positiveNumbers[0] == null) {
+    positiveMin = 100;
+  } else {
+    positiveMin = positiveNumbers[0] + a - 1;
+  }
+  if (negativeNumbers[0] == null) {
+    negativeMax = 1;
+  } else {
+    negativeMax = negativeNumbers[0] + a + 1;
+  }
+}
+
+$("button").on("click", function () {
+  let b = Number(document.getElementById("userGuess").value);
+
+  guessNumber.push(b);
+  if (b == "") {
+    //因為b是數字 所以用==才能自動轉型空字串(??
+    document.getElementById("feedback").innerHTML = "請輸入1-100數字";
+    guessTime = 0; //沒猜數字不算次數
+    return;
+  } else if (a === b) {
+    document.getElementById("feedback").innerHTML = "正確";
+    randomNumber(); //重新產生新數字
+    guessTime = 0; //這裡不宣告 會汙染到其他變數嗎?
+    guessNumber = []; //正確 計算猜測數字歸零
+    difference = []; //正確 陣列歸零
+    return;
+  } else if (b > a) {
+    intervalNumber();
+    filterNumber(); // 和答案差距 按順序排列  加這裡以確保最新數據
+    document.getElementById("feedback").innerHTML =
+      "較大，再猜小一點數字, 答案在" +
+      negativeMax +
+      "和" +
+      positiveMin +
+      "之間";
+  } else if (b < a) {
+    intervalNumber();
+    filterNumber(); 
+    document.getElementById("feedback").innerHTML =
+      "較小，再猜大一點數字, 答案在" +
+      negativeMax +
+      "和" +
+      positiveMin +
+      "之間";
+  }
+  guessTime++; //累加
+  intervalNumber();
+  filterNumber(); //和答案差距 按順序排列
+
+  document.getElementById("guessTime").innerHTML =
+    `總共猜了` + guessTime + `次`;
+  //計算總共猜了幾次
+
+  console.log(a); //答案是什麼數字
+});
+
+</script>
 </body>
 </html>
