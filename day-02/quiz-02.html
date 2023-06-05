@@ -1,36 +1,70 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>圖片集輪播切換</title>
-    <script src="https://code.jquery.com/jquery-3.6.4.slim.js" integrity="sha256-dWvV84T6BhzO4vG6gWhsWVKVoa4lVmLnpBOZh/CAHU4=" crossorigin="anonymous"></script>
-    <style>
-      img {
-        display: none;
-      }
-      .show {
-        display: block;
-      }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>圖片集輪播切換</title>
+  <script src="https://code.jquery.com/jquery-3.6.4.slim.js"
+    integrity="sha256-dWvV84T6BhzO4vG6gWhsWVKVoa4lVmLnpBOZh/CAHU4=" crossorigin="anonymous"></script>
+  <style>
+    section {
+      width: 300px;
+      height: 150px;
+      /* outline: 1px solid #000; */
+      overflow: hidden;
+    }
+
+    .slider {
+      display: flex;
+      transition: transform .3s ease-in-out;
+    }
+
+    img {
+      vertical-align: middle;
+    }
+    p{
+      text-align: center;
+    }
+    div{
+      width: 300px;
+    }
+  </style>
 </head>
 <body>
   <h1>圖片集輪播切換</h1>
 
-  <div style="width: 300px;">
-    <p>
-      <img src="https://placehold.jp/30/dd6699/ffffff/300x150.png?text=Hello" alt="" class="show">
-      <img src="https://placehold.jp/30/dd6699/ffffff/300x150.png?text=Hello2" alt="">
-      <img src="https://placehold.jp/30/dd6699/ffffff/300x150.png?text=Hello3" alt="">
-    </p>
 
-    <p style="text-align: center;">
+  <section>
+    <div class="slider">
+      <img src="https://placehold.jp/30/87CEEB/000/300x150.png?text=Hello" alt="">
+      <img src="https://placehold.jp/30/E6E6FA/000/300x150.png?text=Hello2" alt="">
+      <img src="https://placehold.jp/30/007BA7/000/300x150.png?text=Hello3" alt="">
+      <img src="https://placehold.jp/30/FFD700/000/300x150.png?text=Hello4" alt="">
+      <img src="https://placehold.jp/30/FFB6C1/000/300x150.png?text=Hello5" alt="">
+      <img src="https://placehold.jp/30/B0E0E6/000/300x150.png?text=Hello6" alt="">
+      <img src="https://placehold.jp/30/F0FFFF/000/300x150.png?text=Hello7" alt="">
+      <img src="https://placehold.jp/30/007BA7/000/300x150.png?text=Hello8" alt="">
+      <img src="https://placehold.jp/30/007BA7/000/300x150.png?text=Hello8" alt="">
+      <img src="https://placehold.jp/30/007BA7/000/300x150.png?text=Hello8" alt="">
+      <img src="https://placehold.jp/30/007BA7/000/300x150.png?text=Hello8" alt="">
+      <img src="https://placehold.jp/30/007BA7/000/300x150.png?text=Hello8" alt="">
+      <img src="https://placehold.jp/30/007BA7/000/300x150.png?text=Hello8" alt="">
+      <img src="https://placehold.jp/30/007BA7/000/300x150.png?text=Hello8" alt="">
+      <img src="https://placehold.jp/30/007BA7/000/300x150.png?text=Hello8" alt="">
+      <img src="https://placehold.jp/30/007BA7/000/300x150.png?text=Hello8" alt="">
+      <img src="https://placehold.jp/30/007BA7/000/300x150.png?text=Hello8" alt="">
+      <img src="https://placehold.jp/30/007BA7/000/300x150.png?text=Hello10" alt="">
+    </div>
+
+  </section>
+  <div>
+    <p>
       <button>&lt;</button>
       <button>&gt;</button>
     </p>
   </div>
 
-<!-- 
+  <!-- 
   2. 圖片集輪播切換
 
   有一個圖片集，預設顯示第一張圖片，並有兩個按鈕，分別是「上一張」和「下一張」。
@@ -39,26 +73,27 @@
 
 -->
 
-<script>
-  $(function() {
+  <script>
+
     const $imgs = $('img');
     const $prev = $('button:first');
     const $next = $('button:last');
-    let index = 0;
+    const $slider = $('.slider')
+    const imageWidth = $imgs.width();
+    const totalWidth = imageWidth * $imgs.length;
+    let sliderPosition = 0
 
-    $prev.click(function() {
-      $imgs.eq(index).removeClass('show');
-      index = index === 0 ? $imgs.length - 1 : index - 1;
-      $imgs.eq(index).addClass('show');
+    $prev.click(function () {
+      sliderPosition = sliderPosition === 0 ? -($imgs.length - 1) * imageWidth : sliderPosition + imageWidth
+      $slider.css('transform', `translateX(${sliderPosition}px)`)
     });
 
-    $next.click(function() {
-      $imgs.eq(index).removeClass('show');
-      index = index === $imgs.length - 1 ? 0 : index + 1;
-      $imgs.eq(index).addClass('show');
+    $next.click(function () {
+      sliderPosition = sliderPosition === -($imgs.length - 1) * imageWidth ? 0 : sliderPosition - imageWidth
+      $slider.css('transform', `translateX(${sliderPosition}px)`)
     });
-  });
-</script>
+
+  </script>
 
 </body>
 </html>
