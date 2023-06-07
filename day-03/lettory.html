@@ -69,17 +69,21 @@
 </head>
 <body>
   <div class="wrap">
-    <div class="lottery-nums"></div>
-    <p class="max-six-alert hidden">最多只能選擇六個號碼，請點選已選擇的號碼進行移除後再重選</p>
     <div class="lottery-result ">開獎號碼: <span></span></div>
     <button class="get-result ">開獎</button>
     <button class="initial hidden">開始遊戲</button>
+    <p class="max-six-alert hidden">最多只能選擇六個號碼，請點選已選擇的號碼進行移除後再重選</p>
     <p class="select-six-alert hidden">請選擇六個號碼才能參加活動哦！</p>
     <p class="game-over-alert hidden">遊戲已結束，請點擊<strong><u>開始遊戲</u></strong>重新開始！</p>
   </div>
 
   <script>
-    let array = [...Array(49).keys()].map(x => ++x)
+    // 建立按鈕
+    const lotteryNums = $('<div>', {
+      class: 'lottery-nums'
+    });
+    $('.wrap').prepend(lotteryNums)
+    const array = [...Array(49).keys()].map(x => ++x)
     array.forEach(val => {
       $('.lottery-nums').append(`<div>${val}</div>`)
     })
@@ -166,7 +170,6 @@
     }
 
     const alertText = (element) => {
-      console.log(element)
       element.removeClass('hidden')
       setTimeout(() => {
         element.addClass('hidden')
