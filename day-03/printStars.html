@@ -37,58 +37,79 @@
   <div id="stars-container"></div>
 
   <script>
-    // 正三角形
-    function printTriangle(level) {
-      // 待完成
-    }
+  // 正三角形
+function printTriangle(level) {
+  let TriangleStars = "";
+  for (let i = 0; i <= Number(level); i++) {
+    let addStars = "*".repeat(i); //
+    TriangleStars += addStars + `<br>`; //一定要初始化let stars = "";才能累加
+    // \n無法在網頁上換行 只有console.log可以 所以將\n換成<br>
+    console.log(TriangleStars);
+    $("#stars-container").html(TriangleStars);
+    //放在for迴圈裡面和外面，都可以累加
+  }
+}
 
-    // 倒三角形
-    function printInvertedTriangle(level) {
-      // 待完成
-    }
+// 倒三角形
+function printInvertedTriangle(level) {
+  let InvertedStars = "";
+  for (let i = Number(level); i >= 0; i--) {
+    let addStars = "*".repeat(i);
+    InvertedStars += addStars + `<br>`;
+    console.log(InvertedStars);
+    $("#stars-container").html(InvertedStars);
+  }
+}
 
-    // 等腰三角形
-    function printIsoscelesTriangle(level) {
-      // 待完成
-    }
+// 等腰三角形
+function printIsoscelesTriangle(level) {
+  let IsoscelesStars = "";
+  for (let i = 1; i <= Number(level); i++) {
+    let spaces = "&nbsp;&nbsp;".repeat(Number(level) - i);
+    //不知道為什麼單純打" " 無法顯示出空白? 下方切換text(IsoscelesStars)也沒辦法，只好用&nbsp;
+    let addStars = "*".repeat(i * 2 - 1); //這段很難想
+    IsoscelesStars += spaces + addStars + "<br>";
+    $("#stars-container").html(IsoscelesStars);
+    console.log(IsoscelesStars);
+  }
+}
 
-    // 菱形
-    function printDiamond(level) {
-      // 僅供參考
-      let stars = '';
-      for (let i = 1; i <= level; i++) {
-        const spaces = ' '.repeat(level - i);
-        const starLine = '*'.repeat(i * 2 - 1);
-        stars += spaces + starLine + '\n';
-      }
-      for (let i = level - 1; i >= 1; i--) {
-        const spaces = ' '.repeat(level - i);
-        const starLine = '*'.repeat(i * 2 - 1);
-        stars += spaces + starLine + '\n';
-      }
-      return stars;
-    }
-    
-    // 印星星
-    $('.submit').on('click', () => {
-      const level = +$('.level').val();
-      const printType = $('.print-type').val();
+// 菱形
+function printDiamond(level) {
+  let diamondStars = "";
+  for (let i = 1; i <= Number(level); i++) {
+    let spaces = "&nbsp;&nbsp;".repeat(Number(level) - i);
+    let addStars = "*".repeat(i * 2 - 1);
+    diamondStars += spaces + addStars + `<br>`;
+    $("#stars-container").html(diamondStars);
+  }
+  for (let i = Number(level) - 1; i >= 1; i--) {
+    let addStars = "*".repeat(i * 2 - 1);
+    let spaces = "&nbsp;&nbsp;".repeat(Number(level)-i);
+    diamondStars += spaces + addStars + `<br>`;
+    $("#stars-container").html(diamondStars);
+  }
+}
 
-      switch (printType) {
-        case 'triangle':
-          $('#stars-container').text(printTriangle(level));
-          break;
-        case 'inverted-triangle':
-          $('#stars-container').text(printInvertedTriangle(level));
-          break;
-        case 'isosceles-triangle':
-          $('#stars-container').text(printIsoscelesTriangle(level));
-          break;
-        case 'diamond':
-          $('#stars-container').text(printDiamond(level));
-          break;
-      }
-    });
+// 印星星
+$(".submit").on("click", () => {
+  let level = $(".level").val();
+  let printType = $(".print-type").val();
+  if (printType === "triangle") {
+    //為何將<option value="triangle">正三角型</option> 內的value屬性刪除 再用val()取值,無法取出"正三角形"中文字呢?
+    console.log("正三角形");
+    printTriangle(level);
+  } else if (printType === "inverted-triangle") {
+    printInvertedTriangle(level);
+    console.log("倒三角形");
+  } else if (printType === "isosceles-triangle") {
+    printIsoscelesTriangle(level);
+    console.log("等腰三角形");
+  } else if (printType === "diamond") {
+    printDiamond(level);
+  }
+});
+
     
     
   </script>
