@@ -57,24 +57,16 @@
       padding: 20px 0;
       font-size: 20px;
     }
-
-    .show {
-      display: block;
-    }
-
-    .hidden {
-      display: none;
-    }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="lottery-result ">開獎號碼: <span></span></div>
-    <button class="get-result ">開獎</button>
-    <button class="initial hidden">開始遊戲</button>
-    <p class="max-six-alert hidden">最多只能選擇六個號碼，請點選已選擇的號碼進行移除後再重選</p>
-    <p class="select-six-alert hidden">請選擇六個號碼才能參加活動哦！</p>
-    <p class="game-over-alert hidden">遊戲已結束，請點擊<strong><u>開始遊戲</u></strong>重新開始！</p>
+    <div class="lottery-result">開獎號碼: <span></span></div>
+    <button class="get-result">開獎</button>
+    <button class="initial">開始遊戲</button>
+    <p class="max-six-alert">最多只能選擇六個號碼，請點選已選擇的號碼進行移除後再重選</p>
+    <p class="select-six-alert">請選擇六個號碼才能參加活動哦！</p>
+    <p class="game-over-alert">遊戲已結束，請點擊<strong><u>開始遊戲</u></strong>重新開始！</p>
   </div>
 
   <script>
@@ -100,24 +92,28 @@
     const $init = $('.initial')
     const $getResult = $('.get-result')
     const $winNumber = $('.lottery-result span')
-    const lottery = [];
+    let lottery = [];
+
+    $maxSixAlert.hide()
+    $selectSixAlert.hide()
+    $gameOverAlert.hide()
+    $init.hide()
 
     $init.on('click', () => {
+      lottery=[]
       $allNumbers.each(function (e) {
         $(this).attr('class', '')
       })
       $winNumber.text('')
-      $('.get-result').removeClass('hidden')
-      $init.addClass('hidden')
-
+      $('.get-result').show()
+      $init.hide()
     })
 
 
     // 點擊數字的事件
     $allNumbers.on('click', function () {
       const $select = $('.highlight')
-
-      if (!$init.hasClass('hidden')) {
+      if ($init.attr('style') !=='display: none;') {
         alertText($gameOverAlert)
         return;
       }
@@ -146,8 +142,8 @@
       setWinAndLostNumber()
 
       $winNumber.text(lottery.toString())
-      $(this).addClass('hidden')
-      $init.removeClass('hidden')
+      $(this).hide()
+      $init.show()
     })
 
     const setLotteryNumber = () => {
@@ -170,9 +166,9 @@
     }
 
     const alertText = (element) => {
-      element.removeClass('hidden')
+      element.show()
       setTimeout(() => {
-        element.addClass('hidden')
+        element.hide()
       }, 2000);
     }
   </script>
