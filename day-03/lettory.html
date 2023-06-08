@@ -20,7 +20,7 @@
       width: 25px;
       height: 25px;
       border: 1px solid #999;
-      background-color: #fff;
+     //background-color: #fff;
       color: #555;
       font-size: 20px;
       padding: 10px;
@@ -92,18 +92,72 @@
     <div class="lottery-result">開獎號碼: <span></span>
     </div>
     <button class="get-result">開獎</button>
+    <button class="get-again">重新猜一次</button>
   </div>
   
   <script>
-    // TODO: 
-    // 1. 讓使用者選擇六個數字
-    // 2. 按下開獎按鈕顯示兌獎的結果
+let lottery = [];
+let guessNumber = [];
+let repeatNumber = []; //中獎數字
 
-    // 點擊數字的事件
-    $('.lottery-nums > div').on('click', function(){})
+//功能:猜數字
+$(".lottery-nums > div").on("click", function () {
+  let a = Number($(this).text());
 
-    // 開獎
-    $('.get-result').on('click', function(){})
+  console.log(a);
+  if (guessNumber.length < 6 && guessNumber.includes(a) === false) {
+    $(this).addClass("bg-red");
+    guessNumber.push(a);
+  } else if (guessNumber.length >= 6) {
+    alert("猜超過次數囉!一次只能猜6個數字");
+  } else if (guessNumber.includes(a) === true) {
+    alert("這數字之前你猜過了");
+  }
+});
+
+//1.沒超過5個 && 都沒重複  就用push
+
+//功能:開獎
+$(".get-result").on("click", function () {
+  //按開獎才有6個隨機數字 再進行比對
+  while (lottery.length < 6) {
+    let answer = Math.floor(Math.random() * 49) + 1;
+    if (lottery.includes(answer)) {
+      continue; //測試隨機產生數字和lottery內有無重複 有重複就不丟進去 直接跑到else
+    } else {
+      lottery.push(answer);
+    }
+
+    console.log(lottery); 
+  }
+
+  winNumbers();
+});
+
+//比對開獎 只要抓出中獎數字就好 沒中獎的不要理它
+function winNumbers() {
+  for (let i = 0; i < lottery.length; i++) {
+    if (lottery.includes(guessNumber[i]) === true) {
+      repeatNumber.push(guessNumber[i]); //將比對重複數字塞入repeatNumber陣列中
+      $(".lottery-result").text(
+        `開獎號碼:有${repeatNumber.length}組號碼中獎，中獎號碼為${repeatNumber.join(', ')}` //這段有需要放在for迴圈外層嗎?
+      );
+    } else {
+      $(".lottery-result").text("6組號碼均無中獎");
+    }
+    console.log(repeatNumber);
+  }
+}
+
+//重新猜一次
+$(".get-again").on("click", function () {
+  lottery.length = 0;     
+  guessNumber.length = 0
+  repeatNumber.length = 0;
+  $(".lottery-nums > div").removeClass("bg-red");
+  $(".lottery-result").text("開獎號碼:");
+});
+
 
   </script>
 </body>
