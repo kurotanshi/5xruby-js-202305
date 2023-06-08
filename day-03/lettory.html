@@ -14,7 +14,7 @@
       width: 600px;
     }
 
-    .lottery-nums>div {
+    .lottery-nums > div {
       display: block;
       float: left;
       width: 25px;
@@ -28,82 +28,157 @@
       line-height: 25px;
       margin-right: 10px;
       margin-bottom: 10px;
+      cursor: pointer;
     }
 
-    .lottery-nums .highlight {
-      background-color: red;
-      color: #fff;
-    }
+      .lottery-nums > div.active {
+        background: #ff3300;
+        color: #fff;
+        font-weight: bold;
+      }
+
+      .lottery-nums .highlight {
+          background-color: red;
+          color: #fff;
+      }
+
+      .lottery-result,
+      .choosed-result,
+      .result {
+          margin: 10px 0px;
+      }
+
+      .result .number{
+          color: red;
+          padding: 0px 5px;
+          font-weight: bold;
+      }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="lottery-nums">
-      <div>1</div>
-      <div>2</div>
-      <div>3</div>
-      <div>4</div>
-      <div>5</div>
-      <div>6</div>
-      <div>7</div>
-      <div>8</div>
-      <div>9</div>
-      <div>10</div>
-      <div>11</div>
-      <div>12</div>
-      <div>13</div>
-      <div>14</div>
-      <div>15</div>
-      <div>16</div>
-      <div>17</div>
-      <div>18</div>
-      <div>19</div>
-      <div>20</div>
-      <div>21</div>
-      <div>22</div>
-      <div>23</div>
-      <div>24</div>
-      <div>25</div>
-      <div>26</div>
-      <div>27</div>
-      <div>28</div>
-      <div>29</div>
-      <div>30</div>
-      <div>31</div>
-      <div>32</div>
-      <div>33</div>
-      <div>34</div>
-      <div>35</div>
-      <div>36</div>
-      <div>37</div>
-      <div>38</div>
-      <div>39</div>
-      <div>40</div>
-      <div>41</div>
-      <div>42</div>
-      <div>43</div>
-      <div>44</div>
-      <div>45</div>
-      <div>46</div>
-      <div>47</div>
-      <div>48</div>
-      <div>49</div>
+    <div class="wrap">
+        <div class="lottery-nums">
+            <div>1</div>
+            <div>2</div>
+            <div>3</div>
+            <div>4</div>
+            <div>5</div>
+            <div>6</div>
+            <div>7</div>
+            <div>8</div>
+            <div>9</div>
+            <div>10</div>
+            <div>11</div>
+            <div>12</div>
+            <div>13</div>
+            <div>14</div>
+            <div>15</div>
+            <div>16</div>
+            <div>17</div>
+            <div>18</div>
+            <div>19</div>
+            <div>20</div>
+            <div>21</div>
+            <div>22</div>
+            <div>23</div>
+            <div>24</div>
+            <div>25</div>
+            <div>26</div>
+            <div>27</div>
+            <div>28</div>
+            <div>29</div>
+            <div>30</div>
+            <div>31</div>
+            <div>32</div>
+            <div>33</div>
+            <div>34</div>
+            <div>35</div>
+            <div>36</div>
+            <div>37</div>
+            <div>38</div>
+            <div>39</div>
+            <div>40</div>
+            <div>41</div>
+            <div>42</div>
+            <div>43</div>
+            <div>44</div>
+            <div>45</div>
+            <div>46</div>
+            <div>47</div>
+            <div>48</div>
+            <div>49</div>
+        </div>
+        <div class="lottery-result">中獎號碼: <span></span></div>
+        <div class="choosed-result">我選的號碼: <span></span></div>
+        <button class="get-result">開獎</button>
+        <div class="result">總共對中<span class="number">0</span>個數字</div>
     </div>
-    <div class="lottery-result">開獎號碼: <span></span>
-    </div>
-    <button class="get-result">開獎</button>
-  </div>
   
   <script>
     // TODO: 
     // 1. 讓使用者選擇六個數字
     // 2. 按下開獎按鈕顯示兌獎的結果
 
-    // 點擊數字的事件
-    $('.lottery-nums > div').on('click', function(){})
+      let choosed = [],
+          lottery = [],
+          i = 0,
+          n = 0;
+
+      while (i < 6) {
+          let random = Math.floor(Math.random() * 49) + 1;
+          if (!(lottery.includes(random))) {
+              lottery[i] = random;
+              i++; 
+          }       
+      }
+
+      console.log(lottery);
+
+    // 點擊數字的事件      
+
+      $(document).on('click', '.lottery-nums div:not(.active)', function ()  {
+          if ($('.active').length === 6) {
+              alert('最多選6個');
+          } else {
+              choosed.push(+($(this).text()));
+              $(this).addClass('active');
+          }
+      });
+
+      $(document).on('click', '.lottery-nums .active', function () {
+          let index = choosed.indexOf(+$(this).text());
+          choosed.splice(index, 1);
+          $(this).removeClass('active');
+      });
+
+
 
     // 開獎
-    $('.get-result').on('click', function(){})
+      $('.get-result').on('click', function () {
+
+          if ($('.active').length === 6) {
+
+              lottery.sort(function (a, b) { return a - b; });
+              choosed.sort(function (a, b) { return a - b; });
+
+              $('.lottery-result span').text(lottery);
+              $('.choosed-result span').text(choosed);
+
+              let i = 0;
+              while (i < 6) {
+                  if (lottery.includes(choosed[i])) {
+                      n = n + 1;                      
+                  }
+                  i++;
+              }
+              $('.result .number').text(n);
+          } else {
+              alert('請選擇6個數字');
+          }         
+
+      })
+
+      
 
   </script>
 </body>
