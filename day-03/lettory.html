@@ -178,11 +178,17 @@
 
       const setWinAndLostNumber = () => {
         $allNumbers.each(function (e) {
-          if (lottery.includes(+$(this).text()) && $(this).hasClass('highlight')) {
-            $(this).attr('class', 'winning')
-          } else if (lottery.includes(+$(this).text()) && !$(this).hasClass('highlight')) {
-            $(this).attr('class', 'lost')
+          const $this = $(this)
+          const number = +$this.text()
+          //雖然這樣寫好像只是重構，沒更換處理方式@@...
+          if (lottery.includes(number)) {
+            if ($this.hasClass('highlight')) {
+              $this.attr('class', 'winning')
+            } else {
+              $this.attr('class', 'lost')
+            }
           }
+
         })
       }
 
