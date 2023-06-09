@@ -70,107 +70,129 @@
   </div>
 
   <script>
-    // 建立按鈕
-    const lotteryNums = $('<div>', {
-      class: 'lottery-nums'
-    });
-    $('.wrap').prepend(lotteryNums)
-    const array = [...Array(49).keys()].map(x => ++x)
-    array.forEach(val => {
-      $('.lottery-nums').append(`<div>${val}</div>`)
-    })
+    ; (function () {
+      // 建立按鈕
+      const settingButton = () => {
+        $('.lottery-nums').remove();
+        const lotteryNums = $('<div>', {
+          class: 'lottery-nums'
+        });
+        $('.wrap').prepend(lotteryNums)
+        const array = [...Array(49).keys()].map(x => ++x)
+        array.forEach(val => {
+          $('.lottery-nums').append(`<div>${val}</div>`)
+        })
+      }
+      settingButton()
 
-    // TODO: 
-    // 1. 讓使用者選擇六個數字
-    // 2. 按下開獎按鈕顯示兌獎的結果
 
-    const $allNumbers = $('.lottery-nums > div')
-    const $maxSixAlert = $('.max-six-alert')
-    const $selectSixAlert = $('.select-six-alert')
-    const $gameOverAlert = $('.game-over-alert')
+      // TODO: 
+      // 1. 讓使用者選擇六個數字
+      // 2. 按下開獎按鈕顯示兌獎的結果
 
-    const $init = $('.initial')
-    const $getResult = $('.get-result')
-    const $winNumber = $('.lottery-result span')
-    let lottery = [];
+      let $allNumbers = $('.lottery-nums > div')
+      const $maxSixAlert = $('.max-six-alert')
+      const $selectSixAlert = $('.select-six-alert')
+      const $gameOverAlert = $('.game-over-alert')
 
-    $maxSixAlert.hide()
-    $selectSixAlert.hide()
-    $gameOverAlert.hide()
-    $init.hide()
+      const $init = $('.initial')
+      const $getResult = $('.get-result')
+      const $winNumber = $('.lottery-result span')
+      let lottery = [];
 
-    $init.on('click', () => {
-      lottery=[]
-      $allNumbers.each(function (e) {
-        $(this).attr('class', '')
-      })
-      $winNumber.text('')
-      $('.get-result').show()
+
+      //把提示文字藏起來
+      $maxSixAlert.hide()
+      $selectSixAlert.hide()
+      $gameOverAlert.hide()
       $init.hide()
-    })
 
+      // 舊的code 註解掉
+      // $init.on('click', () => {
+      //   lottery=[]
+      //   $allNumbers.each(function (e) {
+      //     $(this).attr('class', '')
+      //   })
+      //   $winNumber.text('')
+      //   $('.get-result').show()
+      //   $init.hide()
+      // })
 
-    // 點擊數字的事件
-    $allNumbers.on('click', function () {
-      const $select = $('.highlight')
-      if ($init.attr('style') !=='display: none;') {
-        alertText($gameOverAlert)
-        return;
-      }
+      /* Question：如果我把 init 的事件改成清除所有原本按鈕，並重新建立，為什麼第二局就沒辦法玩了？*/
+      $init.on('click', () => {
+        settingButton()
+        /* Answer：一開始的$allNumbers資料抓到的是「已經建立好的」節點
+                   由於內容已經被.remove() 清掉，即便重新建立，$allNumbers也不會是「重新建立」的內容
+                   所以才會怎麼點擊都不會有反應 ...  
+        */
 
-      if ($select.length === 6 && !$(this).hasClass('highlight')) {
-        alertText($maxSixAlert)
-        return;
-      }
+        //Solution：重新指定allNumbers，並且綁定click事件
+        $allNumbers = $('.lottery-nums > div')
+        $allNumbers.on('click', clickHandler)
 
-      if (!$(this).hasClass('highlight')) {
-        $(this).addClass('highlight')
-      } else {
-        $(this).removeClass('highlight')
-      }
+        lottery = []
 
-    })
-
-    // 開獎
-    $getResult.on('click', function () {
-      if (!($('.highlight').length === 6)) {
-        alertText($selectSixAlert);
-        return;
-      }
-
-      setLotteryNumber()
-      setWinAndLostNumber()
-
-      $winNumber.text(lottery.toString())
-      $(this).hide()
-      $init.show()
-    })
-
-    const setLotteryNumber = () => {
-      while (lottery.length < 6) {
-        let n = Math.floor(Math.random() * 49) + 1;
-        if (!lottery.includes(n)) {
-          lottery.push(n);
-        }
-      }
-    }
-
-    const setWinAndLostNumber = () => {
-      $allNumbers.each(function (e) {
-        if (lottery.includes(+$(this).text()) && $(this).hasClass('highlight')) {
-          $(this).attr('class', 'winning')
-        } else if (lottery.includes(+$(this).text()) && !$(this).hasClass('highlight')) {
-          $(this).attr('class', 'lost')
-        }
+        $winNumber.text('')
+        $('.get-result').show()
+        $init.hide()
       })
-    }
 
-    const alertText = (element) => {
-      element.show()
-      setTimeout(() => {
-        element.hide()
-      }, 2000);
-    }
+      // 點擊數字的事件
+      const clickHandler = function () {
+        const $select = $('.highlight')
+        if ($init.attr('style') !== 'display: none;') {
+          alertText($gameOverAlert)
+          return;
+        }
+        if ($select.length === 6 && !$(this).hasClass('highlight')) {
+          alertText($maxSixAlert)
+          return;
+        }
+        $(this).toggleClass('highlight')
+      }
+      $allNumbers.on('click', clickHandler)
+
+      // 開獎
+      $getResult.on('click', function () {
+        if (!($('.highlight').length === 6)) {
+          alertText($selectSixAlert);
+          return;
+        }
+
+        setLotteryNumber()
+        setWinAndLostNumber()
+
+        $winNumber.text(lottery.toString())
+        $(this).hide()
+        $init.show()
+      })
+
+      const setLotteryNumber = () => {
+        while (lottery.length < 6) {
+          let n = Math.floor(Math.random() * 49) + 1;
+          if (!lottery.includes(n)) {
+            lottery.push(n);
+          }
+        }
+      }
+
+      const setWinAndLostNumber = () => {
+        $allNumbers.each(function (e) {
+          if (lottery.includes(+$(this).text()) && $(this).hasClass('highlight')) {
+            $(this).attr('class', 'winning')
+          } else if (lottery.includes(+$(this).text()) && !$(this).hasClass('highlight')) {
+            $(this).attr('class', 'lost')
+          }
+        })
+      }
+
+      const alertText = (element) => {
+        element.show()
+        setTimeout(() => {
+          element.hide()
+        }, 2000);
+      }
+    })()
   </script>
 </body>
 </html>
