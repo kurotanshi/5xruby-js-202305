@@ -7,7 +7,7 @@
     h1 {
       text-align: center;
       margin-bottom: 1rem;
-    } 
+    }
 
     .carousel {
       width: 728px;
@@ -87,7 +87,7 @@
 
 <body>
   <h1>來那你坐啊椅子大賞</h1>
-  
+
   <div class="carousel">
     <ul>
       <li><img src="./chair/chair-01.png" alt="Image 1"></li>
@@ -132,31 +132,84 @@
     $carouselItems.each(function (index) {
       let $dot = $('<span></span>');
       $dotsContainer.append($dot);
-      if(index === currentIndex) {
+      if (index === currentIndex) {
         $dot.addClass('active');
       }
     });
 
     // 提示: $carouselList.animate({ left: 某個數字進行切換 });
     // 提示，可參考 ex-084.html
-    
-    $dotsContainer.on('click', 'span', function() {
-      // TODO: 當點擊導航點時，根據點的順序切換到對應的圖片，並且導航點要有 active Class
+
+    // 設定點點index
+    const setDotIndex = (index) => {
+      currentIndex = index
+    }
+
+    // 設定上一張圖片的index
+    const setPrevIndex = () => {
+      currentIndex = (currentIndex - 1) === -1 ? $carouselItems.length - 1 : currentIndex - 1
+    }
+
+    // 設定下一張圖的index
+    const setNextIndex = () => {
+      currentIndex = (currentIndex + 1) % $carouselItems.length
+    };
+
+    // 取得圖片index
+    const getIndex = () => (currentIndex)
+
+    //輸入目前 取得目前座標
+    const getPosition = () => (getIndex() * itemWidth * -1);
+
+    // 設定對應點的狀態 、 圖片切換
+    const setDotAndPosition = (position) => {
+      const i = getIndex()
+      $('.dots span.active').removeClass('active')
+      $('.dots span').eq(i).addClass('active')
+      $carouselList.stop().animate({ left: position + 'px' });
+    }
+
+    //當點擊導航點時，根據點的順序切換到對應的圖片，並且導航點要有 active Class
+    $dotsContainer.on('click', 'span', function () {
+      setDotIndex($(this).index())
+      setDotAndPosition(getPosition())
     });
 
-    $prevButton.on('click', function() {
-      // TODO: 當點擊上一張箭頭時，切換到上一張圖片
-
+    //當點擊上一張箭頭時，切換到上一張圖片
+    $prevButton.on('click', function () {
+      setPrevIndex()
+      setDotAndPosition(getPosition())
     });
 
-    $nextButton.on('click', function() {
-      // TODO: 當點擊下一張箭頭時，切換到下一張圖片      
-
+    // 當點擊下一張箭頭時，切換到下一張圖片
+    $nextButton.on('click', function () {
+      setNextIndex()
+      setDotAndPosition(getPosition())
     });
 
-    
-    // TODO (Bonus): 自動輪播，每五秒切換到下一張圖片，最後一張圖片切換到第一張圖片
-    
+    // 自動輪播，每五秒切換到下一張圖片，最後一張圖片切換到第一張圖片
+    let timer;
+    const setTimeInterval = () => {
+      timer = setInterval(() => {
+        setNextIndex()
+        setDotAndPosition(getPosition())
+      }, 2000);
+    }
+
+    const stopInterval = () => {
+      clearInterval(timer)
+    }
+
+    setTimeInterval()
+
+    // 偵測滑鼠滑入滑出事件，滑入時，暫停輪播，滑出後，繼續輪播
+    $('.carousel').on('mouseenter', () => {
+      stopInterval()
+    })
+
+    $('.carousel').on('mouseleave', () => {
+      setTimeInterval()
+    })
   </script>
 </body>
 
