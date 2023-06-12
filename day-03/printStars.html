@@ -16,7 +16,8 @@
       background-color: #f1f1f1;
     }
   </style>
-  <script src="https://code.jquery.com/jquery-3.6.4.slim.js" integrity="sha256-dWvV84T6BhzO4vG6gWhsWVKVoa4lVmLnpBOZh/CAHU4=" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.6.4.slim.js"
+    integrity="sha256-dWvV84T6BhzO4vG6gWhsWVKVoa4lVmLnpBOZh/CAHU4=" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -24,7 +25,7 @@
     <label>
       輸入層數 <input class="level" type="number" min="1" max="10">
     </label>
-    
+
     <select class="print-type">
       <option value="triangle">正三角型</option>
       <option value="inverted-triangle">倒三角形</option>
@@ -39,17 +40,57 @@
   <script>
     // 正三角形
     function printTriangle(level) {
-      // 待完成
+
+      //方法一
+      let methodOne = ''
+      for (let i = 1; i <= level; i++) {
+        for (let j = 1; j <= i; j++) {
+          methodOne += '*'
+        }
+        methodOne += '\n'
+      }
+
+      //方法二
+      let methodTwo = ''
+      for (let i = 1; i <= level; i++) {
+        let start = '*'.repeat(i)
+        methodTwo += start +'\n'
+      }
+
+      return methodTwo;
     }
 
     // 倒三角形
     function printInvertedTriangle(level) {
-      // 待完成
+      //方法一
+      let methodOne = ''
+      for (let i = level; i > 0; i--) {
+        for (let j = i; j > 0; j--) {
+          methodOne += '*'
+        }
+        methodOne += '\n'
+      }
+
+      //方法二
+      let methodTwo = ''
+      for (let i = level; i > 0; i--) {
+        let start = '*'.repeat(i)
+        methodTwo += start + '\n'
+      }
+      return methodTwo;
     }
 
     // 等腰三角形
     function printIsoscelesTriangle(level) {
-      // 待完成
+      let finialStart = ''
+      for (let i = 1; i <= level; i++) {
+        const eachLineCount = 2 * i - 1;
+        const endLineCount = 2 * level - 1;
+        const space = ' '.repeat((endLineCount - eachLineCount) / 2);
+        const start = '*'.repeat(eachLineCount)
+        finialStart += (space + start + '\n')
+      }
+      return finialStart;
     }
 
     // 菱形
@@ -68,7 +109,7 @@
       }
       return stars;
     }
-    
+
     // 印星星
     $('.submit').on('click', () => {
       const level = +$('.level').val();
@@ -89,8 +130,8 @@
           break;
       }
     });
-    
-    
+
+
   </script>
 </body>
 </html>

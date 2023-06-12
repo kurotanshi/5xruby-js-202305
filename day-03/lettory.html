@@ -2,7 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <script src="https://code.jquery.com/jquery-3.6.4.slim.js" integrity="sha256-dWvV84T6BhzO4vG6gWhsWVKVoa4lVmLnpBOZh/CAHU4=" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.6.4.slim.js"
+    integrity="sha256-dWvV84T6BhzO4vG6gWhsWVKVoa4lVmLnpBOZh/CAHU4=" crossorigin="anonymous"></script>
   <title>五倍樂透自動選號機</title>
   <style type="text/css">
     .wrap {
@@ -28,83 +29,146 @@
       line-height: 25px;
       margin-right: 10px;
       margin-bottom: 10px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .lottery-nums .winning {
+      background-color: green;
+      color: #fff;
+    }
+
+    .lottery-nums .lost {
+      background-color: yellow;
     }
 
     .lottery-nums .highlight {
       background-color: red;
       color: #fff;
     }
+
+    p {
+      font-size: 26px;
+      font-weight: bold;
+      color: #f00;
+    }
+
+    .lottery-result {
+      padding: 20px 0;
+      font-size: 20px;
+    }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="lottery-nums">
-      <div>1</div>
-      <div>2</div>
-      <div>3</div>
-      <div>4</div>
-      <div>5</div>
-      <div>6</div>
-      <div>7</div>
-      <div>8</div>
-      <div>9</div>
-      <div>10</div>
-      <div>11</div>
-      <div>12</div>
-      <div>13</div>
-      <div>14</div>
-      <div>15</div>
-      <div>16</div>
-      <div>17</div>
-      <div>18</div>
-      <div>19</div>
-      <div>20</div>
-      <div>21</div>
-      <div>22</div>
-      <div>23</div>
-      <div>24</div>
-      <div>25</div>
-      <div>26</div>
-      <div>27</div>
-      <div>28</div>
-      <div>29</div>
-      <div>30</div>
-      <div>31</div>
-      <div>32</div>
-      <div>33</div>
-      <div>34</div>
-      <div>35</div>
-      <div>36</div>
-      <div>37</div>
-      <div>38</div>
-      <div>39</div>
-      <div>40</div>
-      <div>41</div>
-      <div>42</div>
-      <div>43</div>
-      <div>44</div>
-      <div>45</div>
-      <div>46</div>
-      <div>47</div>
-      <div>48</div>
-      <div>49</div>
-    </div>
-    <div class="lottery-result">開獎號碼: <span></span>
-    </div>
+    <div class="lottery-result">開獎號碼: <span></span></div>
     <button class="get-result">開獎</button>
+    <button class="initial">開始遊戲</button>
+    <p class="max-six-alert">最多只能選擇六個號碼，請點選已選擇的號碼進行移除後再重選</p>
+    <p class="select-six-alert">請選擇六個號碼才能參加活動哦！</p>
+    <p class="game-over-alert">遊戲已結束，請點擊<strong><u>開始遊戲</u></strong>重新開始！</p>
   </div>
-  
+
   <script>
-    // TODO: 
-    // 1. 讓使用者選擇六個數字
-    // 2. 按下開獎按鈕顯示兌獎的結果
+    ; (function () {
+      // 建立按鈕
+      const settingButton = () => {
+        $('.lottery-nums').remove();
+        const lotteryNums = $('<div>', {
+          class: 'lottery-nums'
+        });
+        $('.wrap').prepend(lotteryNums)
+        const array = [...Array(49).keys()].map(x => ++x)
+        array.forEach(val => {
+          $('.lottery-nums').append(`<div>${val}</div>`)
+        })
+      }
+      settingButton()
 
-    // 點擊數字的事件
-    $('.lottery-nums > div').on('click', function(){})
+      const $maxSixAlert = $('.max-six-alert')
+      const $selectSixAlert = $('.select-six-alert')
+      const $gameOverAlert = $('.game-over-alert')
 
-    // 開獎
-    $('.get-result').on('click', function(){})
+      const $init = $('.initial')
+      const $getResult = $('.get-result')
+      const $winNumber = $('.lottery-result span')
+      let lottery = [];
 
+      //把提示文字藏起來
+      $maxSixAlert.hide()
+      $selectSixAlert.hide()
+      $gameOverAlert.hide()
+      $init.hide()
+
+      $init.on('click', () => {
+        settingButton()
+        lottery = []
+        $winNumber.text('')
+        $('.get-result').show()
+        $init.hide()
+      })
+
+      // 點擊數字的事件
+      $('.wrap').on('click', '.lottery-nums div', function () {
+        const $select = $('.highlight')
+        if ($init.attr('style') !== 'display: none;') {
+          alertText($gameOverAlert)
+          return;
+        }
+        if ($select.length === 6 && !$(this).hasClass('highlight')) {
+          alertText($maxSixAlert)
+          return;
+        }
+        $(this).toggleClass('highlight')
+      })
+
+      // 開獎
+      $getResult.on('click', function () {
+        if (!($('.highlight').length === 6)) {
+          alertText($selectSixAlert);
+          return;
+        }
+
+        setLotteryNumber()
+        setWinAndLostNumber()
+
+        $winNumber.text(lottery.toString())
+        $(this).hide()
+        $init.show()
+      })
+
+      const setLotteryNumber = () => {
+        while (lottery.length < 6) {
+          let n = Math.floor(Math.random() * 49) + 1;
+          if (!lottery.includes(n)) {
+            lottery.push(n);
+          }
+        }
+      }
+
+      const setWinAndLostNumber = () => {
+        $('.lottery-nums > div').each(function (e) {
+          const $this = $(this)
+          const number = +$this.text()
+          if (lottery.includes(number)) {
+            if ($this.hasClass('highlight')) {
+              $this.attr('class', 'winning')
+            } else {
+              $this.attr('class', 'lost')
+            }
+          }
+        })
+      }
+
+      let timer
+      const alertText = (element) => {
+        clearTimeout(timer)
+        element.show()
+        timer = setTimeout(() => {
+          element.hide()
+        }, 2000);
+      }
+    })()
   </script>
 </body>
 </html>

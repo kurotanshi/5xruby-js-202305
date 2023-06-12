@@ -1,24 +1,95 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>猜數字遊戲</title>
-    <script src="https://code.jquery.com/jquery-3.6.4.slim.js" integrity="sha256-dWvV84T6BhzO4vG6gWhsWVKVoa4lVmLnpBOZh/CAHU4=" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>猜數字遊戲</title>
+  <script src="https://code.jquery.com/jquery-3.6.4.slim.js"
+    integrity="sha256-dWvV84T6BhzO4vG6gWhsWVKVoa4lVmLnpBOZh/CAHU4=" crossorigin="anonymous"></script>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    p {
+      font-size: 1.5rem;
+    }
+
+    button {
+      font-size: 1.5rem;
+      padding: 0.5rem 1rem;
+      margin: 0.5rem 0;
+    }
+
+    input {
+      font-size: 1.5rem;
+      padding: 0.5rem 1rem;
+      margin: 0.5rem 0;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
 <body>
-    <h1>猜數字遊戲</h1>
-    <p>請猜一個 1 到 100 之間的數字：</p>
+  <h1>猜數字遊戲</h1>
+  <p>請猜一個 1 到 100 之間的數字：</p>
+  <button class="start">開始遊戲</button>
+  <section class="game-section hidden">
     <input type="text" id="userGuess">
     <button id="submitGuess">送出</button>
-    <p id="feedback"></p>
+  </section>
 
-<!-- 
+  <p id="feedback"></p>
+
+  <!-- 
   1. 建立一個猜數字遊戲
 
   首先，利用 Math.random() 隨機產生一個介於1至100的整數，由使用者輸入一個數字來猜測。
   程式根據使用者的輸入給出提示：較大、較小或正確。
   使用者可無限次數嘗試猜測，直到猜對為止，並提示對方猜了幾次。
 -->
+  <script>
+    (function () {
+      const $start = $('.start')
+      const $feedback = $('#feedback');
+      const $userGuess = $('#userGuess');
+      const $submitGuess = $('#submitGuess');
+      let count = 0;
+      let answer = 0;
+
+      $start.click(()=>{
+        answer = Math.floor(Math.random() * 100) + 1;
+        count = 0;
+        $feedback.text('');
+        $('.game-section').removeClass('hidden');
+        $('.start').addClass('hidden');
+      })
+
+      $submitGuess.click(() => {
+        count++;
+        let guess = +$userGuess.val();
+        if (guess < 1 || guess > 100) {
+          $feedback.text('請輸入 1 到 100 之間的數字');
+        } else if (guess > answer) {
+          $feedback.text('太大了');
+        } else if (guess < answer) {
+          $feedback.text('太小了');
+        } else if (guess === answer) {
+          $('.game-section').addClass('hidden');
+          $('.start').removeClass('hidden');
+          $feedback.text(`猜對了，共猜了 ${count} 次`);
+        } else {
+          $feedback.text('請輸入數字');
+        }
+        $userGuess.val("")
+      })
+    })()
+  </script>
 </body>
 </html>

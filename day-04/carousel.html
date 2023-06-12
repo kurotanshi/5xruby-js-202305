@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <title>Gallery Carousel Example</title>
   <style>
     h1 {
       text-align: center;
       margin-bottom: 1rem;
-    } 
+    }
 
     .carousel {
       width: 728px;
@@ -36,6 +35,7 @@
     .carousel img {
       width: 100%;
       height: 100%;
+      user-drag: none;
     }
 
     .carousel .prev,
@@ -87,17 +87,17 @@
 
 <body>
   <h1>來那你坐啊椅子大賞</h1>
-  
+
   <div class="carousel">
     <ul>
-      <li><img src="./chair/chair-01.png" alt="Image 1"></li>
-      <li><img src="./chair/chair-02.png" alt="Image 2"></li>
-      <li><img src="./chair/chair-03.png" alt="Image 3"></li>
-      <li><img src="./chair/chair-04.png" alt="Image 4"></li>
-      <li><img src="./chair/chair-05.png" alt="Image 5"></li>
-      <li><img src="./chair/chair-06.png" alt="Image 6"></li>
-      <li><img src="./chair/chair-07.png" alt="Image 7"></li>
-      <li><img src="./chair/chair-08.png" alt="Image 8"></li>
+      <li><img src="./chair/chair-01.png" alt="Image 1" draggable="false" /></li>
+      <li><img src="./chair/chair-02.png" alt="Image 2" draggable="false" /></li>
+      <li><img src="./chair/chair-03.png" alt="Image 3" draggable="false" /></li>
+      <li><img src="./chair/chair-04.png" alt="Image 4" draggable="false" /></li>
+      <li><img src="./chair/chair-05.png" alt="Image 5" draggable="false" /></li>
+      <li><img src="./chair/chair-06.png" alt="Image 6" draggable="false" /></li>
+      <li><img src="./chair/chair-07.png" alt="Image 7" draggable="false" /></li>
+      <li><img src="./chair/chair-08.png" alt="Image 8" draggable="false" /></li>
     </ul>
     <div class="dots"></div>
 
@@ -111,53 +111,214 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
     // 容器定義
-    const $carouselList = $('.carousel ul');
-    const $carouselItems = $('.carousel ul li');
-    const $dotsContainer = $('.carousel .dots');
+    const $carouselList = $(".carousel ul");
+    let $carouselItems = $(".carousel ul li");
+    const $dotsContainer = $(".carousel .dots");
 
     // 前一張
-    const $prevButton = $('.carousel .prev');
+    const $prevButton = $(".carousel .prev");
     // 下一張
-    const $nextButton = $('.carousel .next');
+    const $nextButton = $(".carousel .next");
 
-    // 目前所顯示的圖片索引
-    let currentIndex = 0;
+    // 目前所顯示的圖片索引，為了效果，預設要展示「第二張」
+    let picIndex = 1;
+    // 目前所顯示的導航點索引
+    let dotIndex = 0;
+
+    // 動態新增圖片切換的導航點
+    $carouselItems.each(function () {
+      let $dot = $("<span></span>");
+      $dotsContainer.append($dot);
+    });
+
+    // 所有的導航點
+    const $dots = $(".dots span");
+    // 預設active 在第一張
+    $dots.eq(dotIndex).addClass("active");
 
     // CSS 初始化
     const itemWidth = $carouselItems.first().outerWidth(true);
+    // 把圖片第一張複製一份放到最後一張
+    $carouselList.append($carouselItems.eq(0).clone());
+    // 把圖片最後一張複製一份放到第一張
+    $carouselList.prepend(
+      $carouselItems.eq($carouselItems.length - 1).clone()
+    );
+    // 因為用程式更改了DOM ，重新綁一次carouselItems的內容
+    $carouselItems = $(".carousel ul li");
+    // 計算輪播圖的總寬度
     const carouselWidth = itemWidth * $carouselItems.length;
-    $carouselList.css('width', carouselWidth);
+    // 設定清單寬度
+    $carouselList.css("width", carouselWidth);
+    // 設定展示第一張圖的位置
+    $carouselList.css("left", -1 * itemWidth + "px");
 
-    // 動態新增圖片切換的導航點
-    $carouselItems.each(function (index) {
-      let $dot = $('<span></span>');
-      $dotsContainer.append($dot);
-      if(index === currentIndex) {
-        $dot.addClass('active');
+    // 設定上一張圖片的picIndex
+    const setPrevIndex = () => {
+      // 目前索引 = 第一張時(看起來是最後一張)，先設定回實際要展示的「最後一張」，再將索引值 -1
+      // 否則直接 -1
+      if (picIndex === 0) {
+        picIndex = $carouselItems.length - 2;
+        $carouselList.css("left", getPosition() + "px");
       }
+      picIndex -= 1;
+    };
+
+    // 設定下一張圖的picIndex
+    const setNextIndex = () => {
+      // 目前索引 = 最後一張時(看起來是第一張)，先設定回實際要展示的「第一張」，再將索引值+1
+      // 否則直接 +1
+      if (picIndex === $carouselItems.length - 1) {
+        picIndex = 1;
+        $carouselList.css("left", getPosition() + "px");
+      }
+      picIndex += 1;
+    };
+
+    // 點導航點更動圖片時，變動 picIndex 值
+    const setPicIndex = (dtIdx) => {
+      // (以下是避免點擊時 「不直覺」的視覺效果，不影響功能)
+
+      // 如果圖片是最後一張(看起來是第一張)，直接點擊最後一個點時，先把圖片設定到實際要展示的第一張索引
+      if (
+        picIndex === $carouselItems.length - 1 &&
+        dtIdx === $dots.length - 1
+      ) {
+        picIndex = 1;
+      }
+      // 如果圖片是第一張(看起來是最後一張)，直接點擊第一個點時，先把圖片設定到實際要展示的最後一張索引
+      if (picIndex === 0 && dtIdx === 0) {
+        picIndex = $carouselItems.length - 2;
+      }
+      // 上面已經先改了圖片索引，把呈現位置先改掉
+      $carouselList.css("left", getPosition() + "px");
+
+      // (以下是此函數主要功能)
+
+      switch (dtIdx) {
+        // 點擊第0顆，圖片為第二張
+        case 0:
+          picIndex = 1;
+          break;
+        // 點擊最後一顆，圖片為倒數第二張
+        case $dots.length - 1:
+          picIndex = $carouselItems.length - 2;
+          break;
+        // 其餘的，圖片索引值 = 點擊的導航點索引值+1
+        default:
+          picIndex = dtIdx + 1;
+      }
+    };
+
+    // 設定dotIndex 值
+    const setDotIndex = () => {
+      if (picIndex === $carouselItems.length - 1) {
+        dotIndex = 0;
+      } else if (picIndex === 0) {
+        dotIndex = $dots.length - 1;
+      } else {
+        dotIndex = picIndex - 1;
+      }
+    };
+
+    // 取得目前索引所對應座標
+    const getPosition = () => picIndex * itemWidth * -1;
+
+    // 設定對應點的狀態 、 圖片切換
+    const setDotAndPosition = () => {
+      let position = getPosition();
+      $(".dots span.active").removeClass("active");
+      $dots.eq(dotIndex).addClass("active");
+      $carouselList.stop().animate({ left: position + "px" });
+    };
+
+    //當點擊導航點時，根據點的順序切換到對應的圖片，並且導航點要有 active Class
+    $dotsContainer.on("click", "span", function () {
+      setPicIndex($(this).index());
+      setDotIndex();
+      setDotAndPosition();
     });
 
-    // 提示: $carouselList.animate({ left: 某個數字進行切換 });
-    // 提示，可參考 ex-084.html
-    
-    $dotsContainer.on('click', 'span', function() {
-      // TODO: 當點擊導航點時，根據點的順序切換到對應的圖片，並且導航點要有 active Class
+    //當點擊上一張箭頭時，切換到上一張圖片
+    $prevButton.on("click", function () {
+      setPrevIndex();
+      setDotIndex();
+      setDotAndPosition();
     });
 
-    $prevButton.on('click', function() {
-      // TODO: 當點擊上一張箭頭時，切換到上一張圖片
-
+    // 當點擊下一張箭頭時，切換到下一張圖片
+    $nextButton.on("click", function () {
+      setNextIndex();
+      setDotIndex();
+      setDotAndPosition();
     });
 
-    $nextButton.on('click', function() {
-      // TODO: 當點擊下一張箭頭時，切換到下一張圖片      
+    // 自動輪播，每五秒切換到下一張圖片，最後一張圖片切換到第一張圖片
+    let timer;
+    const setTimeInterval = () => {
+      timer = setInterval(() => {
+        setNextIndex();
+        setDotIndex();
+        setDotAndPosition();
+      }, 5000);
+    };
 
+    const stopInterval = () => {
+      clearInterval(timer);
+    };
+
+    //初始化時先執行自動輪播
+    setTimeInterval();
+
+    //偵測滑鼠滑入時，暫停輪播
+    $(".carousel").on("mouseenter", () => {
+      stopInterval();
     });
 
-    
-    // TODO (Bonus): 自動輪播，每五秒切換到下一張圖片，最後一張圖片切換到第一張圖片
-    
+    //偵測滑鼠滑出後，繼續輪播
+    $(".carousel").on("mouseleave", () => {
+      setTimeInterval();
+    });
+
+
+    // 滑鼠滑動、觸控滑動事件
+    let startX = 0
+    let startTime = 0;
+    $(".carousel").on('mousedown touchstart', (e) => {
+      startX = e.pageX || e.touches[0]?.pageX
+      startTime = new Date().getTime();
+    })
+
+    $(".carousel").on('mouseup touchend', (e) => {
+      // 如果滑動時間 太久 ，視為 非滑動事件
+      if (new Date().getTime() - startTime >= 250) return;
+      const endPageX = e.pageX || e.changedTouches[0]?.pageX
+
+      if (startX > endPageX) {
+        setNextIndex();
+      } else if (startX < endPageX) {
+        setPrevIndex();
+      }
+
+      setDotIndex();
+      setDotAndPosition();
+    })
+
+
+      // Q1：由於setPrevIndex() 、setNextIndex() 這兩個函數 控制完 pic的index 之後
+      //     一定要再執行 setDotIndex() ，才會讓最後執行setDotAndPosition()時，讓圖片與導航點的位置是正確的
+
+      //     這樣適合把 設定導航點的 setDotIndex()函數 ，直接寫在 setPrevIndex() 以及 setNextIndex() 裡面嗎？
+
+      //     我的困惑點在於，setPrevIndex() 跟 setNextIndex() 所定義的功能是「設定」圖片索引，如果又把setDotIndex 寫在裡面，就不符合單一職責原則
+      //     但不綁在一起，在click事件，先處理dotIndex 函數，再處理picIndex函數的話，效果又會有問題
+
+      //Q2：這次做作業有注意到，一步一步去思考，功能都有辦法做得出來，可是過程中會產生很多次的「試錯」才能完成。
+      //    例如計算圖片、導航點索引值，因為用了兩個索引值去處理圖片狀況，要交叉設定兩個索引，讓畫面使用起來是順暢的
+      //    過程是  寫了=> 錯了 => 重想 => 再寫了 => 再錯 => 再重想 而完成
+
+      //    請問老師，可以如何訓練自己的思維，讓「思考邏輯」盡量符合「預期結果」
+      //    (就像老師上課示範的感覺：講解到哪裡，寫出程式碼後，就能依照預期想法完成)
   </script>
 </body>
-
 </html>

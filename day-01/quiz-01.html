@@ -5,7 +5,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>題目一：計算兩個數字的和</title>
-  <script src="https://code.jquery.com/jquery-3.6.4.slim.js" integrity="sha256-dWvV84T6BhzO4vG6gWhsWVKVoa4lVmLnpBOZh/CAHU4=" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.6.4.slim.js"
+    integrity="sha256-dWvV84T6BhzO4vG6gWhsWVKVoa4lVmLnpBOZh/CAHU4=" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -14,25 +15,31 @@
   <p>數字 2：<input type="number" id="number2"></p>
   <button>計算和</button>
   <p id="sumResult"></p>
-  
-<script>
-/*
-題目一：計算兩個數字的和
-請編寫一個 JavaScript 函數 `addNumbers` ，接受兩個數字作為參數，並回傳它們的和。
-*/
+  <script>
+    $('button').on('click', function () {
+      let n1 = Number($('#number1').val());
+      let n2 = Number($('#number2').val());
+      let result = addNumbers(n1, n2);
 
-$('button').on('click', function(){
-  let n1 = Number($('#number1').val());
-  let n2 = Number($('#number2').val());
-  let result = addNumbers(n1, n2);
+      $('#sumResult').text(result);
+    });
 
-  $('#sumResult').text(result);
-});
+    function addNumbers(num1, num2) {
+      return num1 + num2;
+    }
 
-function addNumbers(num1, num2) {
-  return num1 + num2;
-}
+    function addNumbers(num1, num2) {
+      return +num1 + +num2;
+    }
 
-</script>
+    $('button').click(() => {
+      let num1 = $('#number1').val();
+      let num2 = $('#number2').val();
+      let sum = addNumbers(num1, num2);
+      $('#sumResult').text(sum);
+    })
+
+
+  </script>
 </body>
 </html>
