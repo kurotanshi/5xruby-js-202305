@@ -20,5 +20,32 @@
   程式根據使用者的輸入給出提示：較大、較小或正確。
   使用者可無限次數嘗試猜測，直到猜對為止，並提示對方猜了幾次。
 -->
+
+    <script>
+
+        let random = Math.floor(Math.random() * 100) + 1,
+            clickTimes = 0;
+
+        console.log(random);
+
+        $('#submitGuess').on('click', function () {
+
+            clickTimes++;
+            var userGuess = +$('#userGuess').val();
+
+            if (userGuess === random) {
+                $('#feedback').text(`猜中了! 總共猜了 ${clickTimes} 次`);
+            } else if (userGuess > random) {
+                $('#feedback').text(`猜的數字太大了 總共猜了 ${clickTimes} 次`);
+            } else if (userGuess < random) {
+                $('#feedback').text(`猜的數字太小了 總共猜了 ${clickTimes} 次`);
+            }
+
+            
+
+        });
+
+    </script>
+
 </body>
 </html>

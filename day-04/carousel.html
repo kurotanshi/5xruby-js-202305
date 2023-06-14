@@ -141,17 +141,48 @@
     // 提示，可參考 ex-084.html
     
     $dotsContainer.on('click', 'span', function() {
-      // TODO: 當點擊導航點時，根據點的順序切換到對應的圖片，並且導航點要有 active Class
+        // TODO: 當點擊導航點時，根據點的順序切換到對應的圖片，並且導航點要有 active Class
+        let dotIndex = $(this).index();
+        $(this).addClass('active');
+        $('.dots span').not(this).removeClass('active');
+        $carouselList.animate({
+            'left': - 728 * dotIndex + 'px' ,
+        }, 2000);
+        currentIndex = dotIndex;
     });
 
     $prevButton.on('click', function() {
       // TODO: 當點擊上一張箭頭時，切換到上一張圖片
-
+        $('.dots span').removeClass('active');
+        if (currentIndex === 0) {
+            $carouselList.animate({
+                'left': - 728 * ($carouselItems.length - 1),
+            }, 2000);
+            currentIndex = $carouselItems.length - 1;   
+        } else {
+            currentIndex = currentIndex - 1;
+            $carouselList.animate({
+                'left': - 728 * currentIndex + 'px',
+            }, 2000); 
+        };
+        $('.dots span').eq(currentIndex).addClass('active');
     });
 
     $nextButton.on('click', function() {
       // TODO: 當點擊下一張箭頭時，切換到下一張圖片      
-
+        $('.dots span').removeClass('active');
+        if (currentIndex === $carouselItems.length - 1) {
+            $carouselList.animate({
+                'left': 0,
+            }, 2000);
+            currentIndex = 0;
+        } else {
+            currentIndex = currentIndex + 1;
+            $carouselList.animate({
+                'left': - 728 * currentIndex + 'px',
+            }, 2000);
+        };
+        $('.dots span').eq(currentIndex).addClass('active');
     });
 
     
