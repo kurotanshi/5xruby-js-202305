@@ -110,52 +110,139 @@
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
-    // 容器定義
-    const $carouselList = $('.carousel ul');
-    const $carouselItems = $('.carousel ul li');
-    const $dotsContainer = $('.carousel .dots');
+   // 容器定義
+const $carouselList = $(".carousel ul");
+const $carouselItems = $(".carousel ul li");
+const $dotsContainer = $(".carousel .dots");
 
-    // 前一張
-    const $prevButton = $('.carousel .prev');
-    // 下一張
-    const $nextButton = $('.carousel .next');
+// 前一張
+const $prevButton = $(".carousel .prev");
+// 下一張
+const $nextButton = $(".carousel .next");
 
-    // 目前所顯示的圖片索引
-    let currentIndex = 0;
+// 目前所顯示的"圖片"索引
+let currentIndex = 0;
 
-    // CSS 初始化
-    const itemWidth = $carouselItems.first().outerWidth(true);
-    const carouselWidth = itemWidth * $carouselItems.length;
-    $carouselList.css('width', carouselWidth);
+// CSS 初始化
+const itemWidth = $carouselItems.first().outerWidth(true);
+const carouselWidth = itemWidth * $carouselItems.length;
+$carouselList.css("width", carouselWidth);
 
-    // 動態新增圖片切換的導航點
-    $carouselItems.each(function (index) {
-      let $dot = $('<span></span>');
-      $dotsContainer.append($dot);
-      if(index === currentIndex) {
-        $dot.addClass('active');
-      }
-    });
+// 動態新增圖片切換的導航點
+// 用each的原因是每個li都配一個小圓點
 
-    // 提示: $carouselList.animate({ left: 某個數字進行切換 });
-    // 提示，可參考 ex-084.html
-    
-    $dotsContainer.on('click', 'span', function() {
-      // TODO: 當點擊導航點時，根據點的順序切換到對應的圖片，並且導航點要有 active Class
-    });
+$carouselItems.each(function (index) {
+  let $dot = $("<span></span>");
 
-    $prevButton.on('click', function() {
-      // TODO: 當點擊上一張箭頭時，切換到上一張圖片
+  $dotsContainer.append($dot); //加在ul容器最底部
+  if (index === currentIndex) {
+    //當$dot的index===圖片的index時
+    $dot.addClass("active");
+  }
+});
 
-    });
+// 提示: $carouselList.animate({ left: 某個數字進行切換 });
+// 提示，可參考 ex-084.html
 
-    $nextButton.on('click', function() {
-      // TODO: 當點擊下一張箭頭時，切換到下一張圖片      
+$dotsContainer.on("click", "span", function () {
+  clearInterval(changePicture);
+  // TODO: 當點擊導航點時，根據點的順序切換到對應的圖片，並且導航點要有 active Class
+  //先將下面原本箭頭打亂的順序回復原狀 我想到的方法: 讓img按順序排列，先不要理他
+  //1.讓圓點與圖片索引相等 2.讓圓點 跟著圖片亮起來
+  let dotIndex = $(this).index() + 1; //$(this)是指dot
+  $("img").attr("src", eval(`ImageSrc` + dotIndex));
+  $("span").removeClass("active");
+  $(this).addClass("active"); //點到的圓點顯示白色
+});
 
-    });
+//箭頭切換圖片
+let ImageSrc1 =
+  "https://github.com/kurotanshi/5xruby-js-202305-quiz/blob/main/day-04/chair/chair-01.png?raw=true";
+let ImageSrc2 =
+  "https://github.com/kurotanshi/5xruby-js-202305-quiz/blob/main/day-04/chair/chair-02.png?raw=true";
+let ImageSrc3 =
+  "https://github.com/kurotanshi/5xruby-js-202305-quiz/blob/main/day-04/chair/chair-03.png?raw=true";
+let ImageSrc4 =
+  "https://github.com/kurotanshi/5xruby-js-202305-quiz/blob/main/day-04/chair/chair-04.png?raw=true";
+let ImageSrc5 =
+  "https://github.com/kurotanshi/5xruby-js-202305-quiz/blob/main/day-04/chair/chair-05.png?raw=true";
+let ImageSrc6 =
+  "https://github.com/kurotanshi/5xruby-js-202305-quiz/blob/main/day-04/chair/chair-06.png?raw=true";
+let ImageSrc7 =
+  "https://github.com/kurotanshi/5xruby-js-202305-quiz/blob/main/day-04/chair/chair-07.png?raw=true";
+let ImageSrc8 =
+  "https://github.com/kurotanshi/5xruby-js-202305-quiz/blob/main/day-04/chair/chair-08.png?raw=true";
 
-    
-    // TODO (Bonus): 自動輪播，每五秒切換到下一張圖片，最後一張圖片切換到第一張圖片
+let a = $("img").length;
+let i = 0;
+$prevButton.on("click", function () {
+  clearInterval(changePicture);
+
+  // TODO: 當點擊上一張箭頭時，切換到上一張圖片
+  //為什麼用addClass("d-none")和removeClass("d-none")無法切換?  所以我先改變 src
+  i = (a + i - 1) % a;
+  $("img").attr("src", eval(`ImageSrc` + (i + 1))); //為什麼使用eval會不安全?
+  //$("img") 意思是只有選到第一張img?
+});
+
+$nextButton.on("click", function () {
+  clearInterval(changePicture);
+  // TODO: 當點擊下一張箭頭時，切換到下一張圖片
+  i = (a + i + 1) % a;
+  $("img").attr("src", eval(`ImageSrc` + (i + 1)));
+});
+
+// TODO (Bonus): 自動輪播，每五秒切換到下一張圖片，最後一張圖片切換到第一張圖片
+const changePicture = setInterval(shiftPicture, 3000);
+//不知為何這樣寫不行? 原本的寫法 : const changePicture = setInterval(function(){shiftPicture(),2000});
+function shiftPicture() {
+  i = (a + i + 1) % a;
+  $("img").attr("src", eval(`ImageSrc` + (i + 1)));
+  $("span").removeClass("active"); //讓圓點反白跟著圖片顯示跑
+  $("span").eq(i).addClass("active");
+}
+
+//若滑鼠滑出圖片 即繼續輪播
+//但不知道為何要重新設定初始值?(這段參考gpt的，因為自己寫寫不出來) ，但滑鼠滑出圖片好幾次的話 輪播會越轉越快...
+let timer;
+function startTimer() {
+  clearTimeout(timer);
+  timer = setTimeout(function () {
+    clearInterval(changePicture);
+    changePicture = setInterval(shiftPicture, 3000);
+  }, 5000);
+}
+
+$(".carousel").on("mousemove", function () {
+  startTimer();
+});
+
+$(".carousel").on("mouseout", function () {
+  startTimer();
+  console.log("滑鼠滑出圖片");
+});
+
+//滑鼠滑入圖片 停止輪播
+$(".carousel").on("mouseenter", function () {
+  clearInterval(changePicture);
+});
+startTimer();
+
+//$prevButton
+// i=0 (8+0-1)%8 餘數7
+// i=1 (8+1-1)%8 餘數0
+//i=2 餘數1
+//i=3 餘數2
+//i=4 餘數3
+//i=5 餘數4
+//i=6 餘數5
+//i=7 餘數6
+
+//$nextButton
+//i=0 (8+0+1)%8 餘數1
+//i=1 餘數2
+//i=2 餘數3
+
     
   </script>
 </body>
